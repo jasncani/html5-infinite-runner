@@ -4,20 +4,24 @@ var keys = [];
 keys["spacebar"] = 32;
 keys["w"] = 87;
 keys['upArrow'] = 38;
-var xSpeed = 1;
-var ySpeed = 1;
-var spawnInterval = 50;
-var characterSize = 30;
+var xSpeed = 3;
+var ySpeed = 3;
+var spawnInterval = 150;
+var characterWidth = 30;
+var characterHeight = 30;
+var gameFps = 120;
+var canvasWidth = 720;
+var canvasHeight = 240;
 
 var gameArea = {
   canvas : document.createElement("canvas"),
   start : function() { // create a <canvas> html element
     this.canvas.width = 720;
-    this.canvas.height = 480;
+    this.canvas.height = 240;
     this.context = this.canvas.getContext("2d");
     document.body.insertBefore(this.canvas, document.body.childNodes[0]);
     this.frameNo = 0;
-    this.interval = setInterval(updateGameArea, 1); // call updateGameArea function every 1ms
+    this.interval = setInterval(updateGameArea, 1000 / gameFps); // call updateGameArea on an interval
     window.addEventListener('keydown', function (e) {
       gameArea.key = e.keyCode;
     })
@@ -34,30 +38,29 @@ var gameArea = {
 }
 
 function updateGameArea() {
-  if (gameArea.key && (gameArea.key == keys["spacebar"] || gameArea.key == keys["upArrow"] || gameArea.key == keys["w"])) {
-    character.speedY = -ySpeed;
+  gameArea.clear();
+  gameArea.frameNo += 1;
+  if (gameArea.frameNo == 1 || framesPassed(spawnInterval)) {
+    var obstacleHeight = (Math.random() * characterHeight) + characterHeight;
+    var x = gameArea.canvas.width;
+    var y = gameArea.canvas.height - obstacleHeight;
+    obstacles.push(new component(characterWidth, obstacleHeight, "green", x, y));
   }
-  else { character.speedY = ySpeed; }
-  var x, y;
+  for (i = 0; i < obstacles.length; i += 1) {
+    obstacles[i].x += -xSpeed;
+    obstacles[i].update();
+  }
+  character.update();
+  if (gameArea.key && (gameArea.key == keys["spacebar"] || gameArea.key == keys["upArrow"] || gameArea.key == keys["w"])) {
+    character.y = gameArea.canvas.height - 4 * characterHeight;
+  }
+  else { character.y = gameArea.canvas.height - characterHeight; }
   for (i = 0; i < obstacles.length; i += 1) {
     if (character.crashWith(obstacles[i])) {
       gameArea.stop();
       return;
     }
   }
-  gameArea.clear();
-  gameArea.frameNo += 1;
-  if (gameArea.frameNo == 1 || framesPassed(spawnInterval)) {
-    x = gameArea.canvas.width;
-    y = Math.random() * gameArea.canvas.height;
-    obstacles.push(new component(characterSize, characterSize, "green", x, y));
-  }
-  for (i = 0; i < obstacles.length; i += 1) {
-    obstacles[i].x += -xSpeed;
-    obstacles[i].update();
-  }
-  character.newPos();
-  character.update();
 }
 
 function framesPassed(n) {
@@ -68,7 +71,6 @@ function framesPassed(n) {
 function component(width, height, color, x, y) {
   this.width = width;
   this.height = height;
-  this.speedY = 0;
   this.x = x;
   this.y = y;
   // draws the component
@@ -76,9 +78,6 @@ function component(width, height, color, x, y) {
     ctx = gameArea.context;
     ctx.fillStyle = color;
     ctx.fillRect(this.x, this.y, this.width, this.height);
-  }
-  this.newPos = function() {
-    this.y += this.speedY;
   }
   this.crashWith = function(otherobj) {
     var myleft = this.x;
@@ -98,7 +97,7 @@ function component(width, height, color, x, y) {
 }
 
 function startGame() {
-  character = new component(characterSize, characterSize, "red", gameArea.canvas.width / 2, gameArea.canvas.height / 2);
+  character = new component(characterWidth, characterHeight, "red", canvasWidth / 4, canvasHeight - characterHeight);
   gameArea.start();
 }
 
