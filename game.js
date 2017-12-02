@@ -1,14 +1,15 @@
 var character;
 var obstacles = [];
 var keys = {spacebar : 32, w: 87, upArrow: 38};
-var xSpeed = 3;
-var ySpeed = 3;
-var spawnInterval = 150;
+var xSpeed = 10;
+var ySpeed = 0;
+var spawnInterval = 50;
 var characterWidth = 30;
 var characterHeight = 30;
-var gameFps = 120;
+var gameFps = 50;
 var canvasWidth = 720;
 var canvasHeight = 240;
+var jumpHeight = 4 * characterHeight;
 
 // the canvas object
 var gameArea = {
@@ -38,28 +39,42 @@ var gameArea = {
 function updateGameArea() {
   gameArea.clear();
   gameArea.frameNo += 1;
-  if (gameArea.frameNo == 1 || framesPassed(spawnInterval)) {
-    createNewObstacle();
+  if (gameArea.frameNo == 1 || framesPassed(spawnInterval)) {createNewObstacle();}
+  if (gameArea.key && (gameArea.key == keys.spacebar || gameArea.key == keys.upArrow || gameArea.key == keys.w) && character.y == gameArea.canvas.height - characterHeight) {
+    // character.y = gameArea.canvas.height - 4 * characterHeight;
+    // character.y = Math.m(character.y - ySpeed, gameArea.canvas.height - 4 * characterHeight);
+    ySpeed = -5;
   }
-  for (i = 0; i < obstacles.length; i += 1) {
-    obstacles[i].x += -xSpeed;
-    obstacles[i].update();
-  }
+  // else {
+  //   // character.y = gameArea.canvas.height - characterHeight;
+  //   // character.y = Math.min(character.y + ySpeed, gameArea.canvas.height - characterHeight);
+  //   ySpeed = 3;
+  // }
+  if (character.y == canvasHeight - jumpHeight) {ySpeed = 5;}
+  character.y += ySpeed;
+  if (character.y > canvasHeight - characterHeight) {character.y = canvasHeight - characterHeight;}
+  updateObstaclePositions();
   character.update();
-  if (gameArea.key && (gameArea.key == keys.spacebar || gameArea.key == keys.upArrow || gameArea.key == keys.w)) {
-    character.y = gameArea.canvas.height - 4 * characterHeight;
-  }
-  else { character.y = gameArea.canvas.height - characterHeight; }
+  checkForCollisions();
+}
+
+function checkForCollisions() {
   for (i = 0; i < obstacles.length; i += 1) {
     if (character.colidesWith(obstacles[i])) {
       gameArea.stop();
-      return;
     }
   }
 }
 
+function updateObstaclePositions() {
+  for (i = 0; i < obstacles.length; i += 1) {
+    obstacles[i].x += -xSpeed;
+    obstacles[i].update();
+  }
+}
+
 function createNewObstacle() {
-  var obstacleHeight = (Math.random() * characterHeight) + characterHeight;
+  var obstacleHeight = (Math.random() * characterHeight/2) + characterHeight;
   var x = gameArea.canvas.width;
   var y = gameArea.canvas.height - obstacleHeight;
   obstacles.push(new component(characterWidth, obstacleHeight, "green", x, y));
