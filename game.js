@@ -70,7 +70,7 @@ function createNewObstacle() {
   var obstacleHeight = (Math.random() * characterHeight/2) + characterHeight;
   var x = gameArea.canvas.width;
   var y = gameArea.canvas.height - obstacleHeight;
-  obstacles.push(new component(characterWidth, obstacleHeight, "green", x, y));
+  obstacles.push(new component(characterWidth, obstacleHeight, "blue", x, y));
 }
 
 function framesPassed(n) {
