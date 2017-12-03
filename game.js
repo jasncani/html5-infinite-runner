@@ -41,9 +41,9 @@ function updateGameArea() {
   gameArea.frameNo += 1;
   if (gameArea.frameNo == 1 || framesPassed(spawnInterval)) {createNewObstacle();}
   if (gameArea.key && (gameArea.key == keys.spacebar || gameArea.key == keys.upArrow || gameArea.key == keys.w) && character.y == gameArea.canvas.height - characterHeight) {
-    ySpeed = -5;
+    ySpeed = -7;
   }
-  if (character.y == canvasHeight - jumpHeight) {ySpeed = 5;}
+  if (character.y <= canvasHeight - jumpHeight) {ySpeed = 7;}
   character.y += ySpeed;
   if (character.y > canvasHeight - characterHeight) {character.y = canvasHeight - characterHeight;}
   updateObstaclePositions();
