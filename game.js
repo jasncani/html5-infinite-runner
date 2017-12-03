@@ -41,15 +41,8 @@ function updateGameArea() {
   gameArea.frameNo += 1;
   if (gameArea.frameNo == 1 || framesPassed(spawnInterval)) {createNewObstacle();}
   if (gameArea.key && (gameArea.key == keys.spacebar || gameArea.key == keys.upArrow || gameArea.key == keys.w) && character.y == gameArea.canvas.height - characterHeight) {
-    // character.y = gameArea.canvas.height - 4 * characterHeight;
-    // character.y = Math.m(character.y - ySpeed, gameArea.canvas.height - 4 * characterHeight);
     ySpeed = -5;
   }
-  // else {
-  //   // character.y = gameArea.canvas.height - characterHeight;
-  //   // character.y = Math.min(character.y + ySpeed, gameArea.canvas.height - characterHeight);
-  //   ySpeed = 3;
-  // }
   if (character.y == canvasHeight - jumpHeight) {ySpeed = 5;}
   character.y += ySpeed;
   if (character.y > canvasHeight - characterHeight) {character.y = canvasHeight - characterHeight;}
