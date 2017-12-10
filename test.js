@@ -76,7 +76,7 @@ var character = new sprite(
     x: 0,
     y: CANVAS_WIDTH - CHARACTER_HEIGHT,
     yVelocity: 0,
-    yMin: CANVAS_HEIGHT - 1.5 * CHARACTER_HEIGHT
+    yMin: CANVAS_HEIGHT - 2 * CHARACTER_HEIGHT
   }
 );
 
