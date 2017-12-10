@@ -90,7 +90,7 @@ function loop() {
 var game = {
   start: function() {
     this.frame = 0;
-    this.interval = setInterval(loop, 75);
+    this.interval = setInterval(loop, 60);
     window.addEventListener('keydown', function (e) {
       game.key = e.keyCode;
     });
