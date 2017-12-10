@@ -28,7 +28,7 @@ function sprite (options) {
     that.context.clearRect(0, 0, canvas.width, canvas.height);
     that.context.drawImage(
       that.image,                               // The image sprite sheet
-      that.frameIndex * this.width,             // The x coordinate where to start clipping on the sprite sheet
+      that.frameIndex * that.width,             // The x coordinate where to start clipping on the sprite sheet
       0,                                        // The y coordinate where to start clipping on the sprite sheet
       that.width,                               // The width of the clipped image
       that.height,                              // The height of the clipped image
@@ -39,7 +39,7 @@ function sprite (options) {
     );
   };
   that.update = function() {
-    that.frameIndex = (this.frameIndex + 1) % this.numFrames;
+    that.frameIndex = (that.frameIndex + 1) % that.numFrames;
   };
   return that;
 }
