@@ -13,8 +13,6 @@ function sprite (options) {
   this.numFrames = options.numFrames;
   this.x = options.x;
   this.y = options.y;
-  this.yVelocity = options.yVelocity;
-  this.yMin = options.yMin;
   this.frameIndex = 1;
   this.render = function () {
     this.context.drawImage(
@@ -50,11 +48,7 @@ function loop() {
 }
 
 var game = {
-  // canvas: document.getElementById("charTestCanvas"),
   start: function() {
-    // this.context = this.canvas.getContext("2d");
-    // this.canvas.width = CANVAS_WIDTH;
-    // this.canvas.height = CANVAS_HEIGHT;
     this.interval = setInterval(loop, 70);
     window.addEventListener('keydown', function (e) {
       game.key = e.keyCode;
@@ -81,9 +75,9 @@ var character = new sprite(
     numFrames: 8,
     x: 0,
     y: CANVAS_WIDTH - CHARACTER_HEIGHT,
-    yVelocity: 0,
-    yMin: CANVAS_HEIGHT - 2 * CHARACTER_HEIGHT
   }
 );
+character.yVelocity = 0;
+character.yMin = CANVAS_HEIGHT - 2 * CHARACTER_HEIGHT;
 
 game.start();
