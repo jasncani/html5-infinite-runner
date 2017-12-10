@@ -118,7 +118,7 @@ var game = {
   }
 };
 
-var canvas = document.getElementById("charTestCanvas");
+var canvas = document.getElementById("game-canvas");
 canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
 
