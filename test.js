@@ -13,7 +13,7 @@ function sprite (options) {
   this.numFrames = options.numFrames;
   this.x = options.x;
   this.y = options.y;
-  this.frameIndex = 1;
+  this.frameIndex = 0;
   this.render = function () {
     this.context.drawImage(
       this.image,                               // The image sprite sheet
@@ -36,7 +36,6 @@ function loop() {
   if (game.key && (game.key == KEYS.SPACEBAR || game.key == KEYS.UP_ARROW || game.key == KEYS.W) && character.y == canvas.height - character.height) {
     character.yVelocity = -12;
   }
-  character.update();
   character.y += character.yVelocity;
   if (character.y < character.yMin) { character.yVelocity = -1 * character.yVelocity; }
   if (character.y > canvas.height - character.height) {
@@ -45,11 +44,12 @@ function loop() {
   }
   character.context.clearRect(0, 0, canvas.width, canvas.height);
   character.render();
+  character.update();
 }
 
 var game = {
   start: function() {
-    this.interval = setInterval(loop, 70);
+    this.interval = setInterval(loop, 100);
     window.addEventListener('keydown', function (e) {
       game.key = e.keyCode;
     });
@@ -74,7 +74,7 @@ var character = new sprite(
     image: characterImage,
     numFrames: 8,
     x: 0,
-    y: CANVAS_WIDTH - CHARACTER_HEIGHT,
+    y: CANVAS_HEIGHT - CHARACTER_HEIGHT,
   }
 );
 character.yVelocity = 0;
