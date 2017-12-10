@@ -1,4 +1,3 @@
-var GRAVITY = 10;
 var CANVAS_WIDTH = 480;
 var CANVAS_HEIGHT = 240;
 var KEYS = {SPACEBAR : 32, W: 87, UP_ARROW: 38};
