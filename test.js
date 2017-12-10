@@ -6,6 +6,7 @@ var CHARACTER_WIDTH = 56;
 var CHARACTER_HEIGHT = 77;
 
 function sprite (options) {
+  this.context = options.context;
   this.width = options.width;
   this.height = options.height;
   this.image = options.image;
@@ -16,7 +17,7 @@ function sprite (options) {
   this.yMin = options.yMin;
   this.frameIndex = 1;
   this.render = function () {
-    game.context.drawImage(
+    this.context.drawImage(
       this.image,                               // The image sprite sheet
       this.frameIndex * this.width,             // The x coordinate where to start clipping on the sprite sheet
       0,                                        // The y coordinate where to start clipping on the sprite sheet
@@ -34,26 +35,26 @@ function sprite (options) {
 }
 
 function loop() {
-  if (game.key && (game.key == KEYS.SPACEBAR || game.key == KEYS.UP_ARROW || game.key == KEYS.W) && character.y == game.canvas.height - character.height) {
+  if (game.key && (game.key == KEYS.SPACEBAR || game.key == KEYS.UP_ARROW || game.key == KEYS.W) && character.y == canvas.height - character.height) {
     character.yVelocity = -12;
   }
   character.update();
   character.y += character.yVelocity;
   if (character.y < character.yMin) { character.yVelocity = -1 * character.yVelocity; }
-  if (character.y > game.canvas.height - character.height) {
-    character.y = game.canvas.height - character.height;
+  if (character.y > canvas.height - character.height) {
+    character.y = canvas.height - character.height;
     character.yVelocity = 0;
   }
-  game.context.clearRect(0, 0, game.canvas.width, game.canvas.height);
+  character.context.clearRect(0, 0, canvas.width, canvas.height);
   character.render();
 }
 
 var game = {
-  canvas: document.getElementById("charTestCanvas"),
+  // canvas: document.getElementById("charTestCanvas"),
   start: function() {
-    this.context = this.canvas.getContext("2d");
-    this.canvas.width = CANVAS_WIDTH;
-    this.canvas.height = CANVAS_HEIGHT;
+    // this.context = this.canvas.getContext("2d");
+    // this.canvas.width = CANVAS_WIDTH;
+    // this.canvas.height = CANVAS_HEIGHT;
     this.interval = setInterval(loop, 70);
     window.addEventListener('keydown', function (e) {
       game.key = e.keyCode;
@@ -64,11 +65,16 @@ var game = {
   }
 };
 
+var canvas = document.getElementById("charTestCanvas");
+canvas.width = CANVAS_WIDTH;
+canvas.height = CANVAS_HEIGHT;
+
 var characterImage = new Image();
 characterImage.src = "running-man-animation-sprite-8-frame-loop.png";
 
 var character = new sprite(
   {
+    context: canvas.getContext("2d"),
     width: CHARACTER_WIDTH,
     height: CHARACTER_HEIGHT,
     image: characterImage,
