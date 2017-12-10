@@ -35,7 +35,38 @@ function sprite (options) {
   return that;
 }
 
+var obstacles = [];
+
+function Obstacle() {
+  this.width = 30;
+  this.height = 30;
+  this.x = CANVAS_WIDTH;
+  this.y = CANVAS_HEIGHT - this.height;
+  this.xVelocity = -12;
+  this.context = canvas.getContext("2d");
+  this.context.fillStyle = "blue";
+  this.draw = function() {
+    this.context.fillRect(this.x, this.y, this.width, this.height);
+  };
+  this.colidesWith = function(otherObj) {
+    var myLeft = this.x;
+    var myRight = this.x + (this.width);
+    var myTop = this.y;
+    var myBottom = this.y + (this.height);
+    var otherLeft = otherObj.x;
+    var otherRight = otherObj.x + (otherObj.width);
+    var otherTop = otherObj.y;
+    var otherBottom = otherObj.y + (otherObj.height);
+    if ((myBottom < otherTop) || (myTop > otherBottom) || (myRight < otherLeft) || (myLeft > otherRight)) {
+      return false;
+    }
+    return true;
+  };
+}
+
 function loop() {
+  game.frame += 1;
+  if (game.frame % 30 == 0) { obstacles.push(new Obstacle()); }
   if (game.key && (game.key == KEYS.SPACEBAR || game.key == KEYS.UP_ARROW || game.key == KEYS.W) && character.y == canvas.height - character.height) {
     character.yVelocity = -12;
   }
@@ -45,17 +76,20 @@ function loop() {
     character.y = canvas.height - character.height;
     character.yVelocity = 0;
   }
-  obstacle.x += obstacle.xVelocity;
   character.render();
-  obstacle.render();
   character.update();
-  if (obstacle.colidesWith(character)) {
-    game.stop();
+  for (var i = 0; i < obstacles.length; i++) {
+    obstacles[i].x += obstacles[i].xVelocity;
+    obstacles[i].draw();
+    if (obstacles[i].colidesWith(character)) {
+      game.stop();
+    }
   }
 }
 
 var game = {
   start: function() {
+    this.frame = 0;
     this.interval = setInterval(loop, 75);
     window.addEventListener('keydown', function (e) {
       game.key = e.keyCode;
@@ -90,32 +124,4 @@ var character = sprite(
 character.yVelocity = 0;
 character.yMin = CANVAS_HEIGHT - 2 * CHARACTER_HEIGHT;
 
-function obstacle() {
-  this.width = 30;
-  this.height = 30;
-  this.x = CANVAS_WIDTH;
-  this.y = CANVAS_HEIGHT - this.height;
-  this.xVelocity = -12;
-  var context = canvas.getContext("2d");
-  context.fillStyle = "blue";
-  this.render = function() {
-    context.fillRect(this.x, this.y, this.width, this.height);
-  };
-  this.colidesWith = function(otherObj) {
-    var myLeft = this.x;
-    var myRight = this.x + (this.width);
-    var myTop = this.y;
-    var myBottom = this.y + (this.height);
-    var otherLeft = otherObj.x;
-    var otherRight = otherObj.x + (otherObj.width);
-    var otherTop = otherObj.y;
-    var otherBottom = otherObj.y + (otherObj.height);
-    if ((myBottom < otherTop) || (myTop > otherBottom) || (myRight < otherLeft) || (myLeft > otherRight)) {
-      return false;
-    }
-    return true;
-  };
-}
-
-obstacle = new obstacle();
 game.start();
