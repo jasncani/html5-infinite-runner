@@ -6,30 +6,33 @@ var CHARACTER_WIDTH = 56;
 var CHARACTER_HEIGHT = 77;
 
 function sprite (options) {
-  this.context = options.context;
-  this.width = options.width;
-  this.height = options.height;
-  this.image = options.image;
-  this.numFrames = options.numFrames;
-  this.x = options.x;
-  this.y = options.y;
-  this.frameIndex = 0;
-  this.render = function () {
-    this.context.drawImage(
-      this.image,                               // The image sprite sheet
-      this.frameIndex * this.width,             // The x coordinate where to start clipping on the sprite sheet
+  var that = {};
+  that.context = options.context;
+  that.width = options.width;
+  that.height = options.height;
+  that.image = options.image;
+  that.numFrames = options.numFrames;
+  that.x = options.x;
+  that.y = options.y;
+  that.frameIndex = 0;
+  that.render = function () {
+    that.context.clearRect(0, 0, canvas.width, canvas.height);
+    that.context.drawImage(
+      that.image,                               // The image sprite sheet
+      that.frameIndex * this.width,             // The x coordinate where to start clipping on the sprite sheet
       0,                                        // The y coordinate where to start clipping on the sprite sheet
-      this.width,                               // The width of the clipped image
-      this.height,                              // The height of the clipped image
-      this.x,                                   // The x coordinate where to place the image on the canvas
-      this.y,                                   // The y coordinate where to place the image on the canvas
-      this.width,                               // The width of the image to use (stretch or reduce the image)
-      this.height                               // The height of the image to use (stretch or reduce the image)
+      that.width,                               // The width of the clipped image
+      that.height,                              // The height of the clipped image
+      that.x,                                   // The x coordinate where to place the image on the canvas
+      that.y,                                   // The y coordinate where to place the image on the canvas
+      that.width,                               // The width of the image to use (stretch or reduce the image)
+      that.height                               // The height of the image to use (stretch or reduce the image)
     );
   };
-  this.update = function() {
-    this.frameIndex = (this.frameIndex + 1) % this.numFrames;
+  that.update = function() {
+    that.frameIndex = (this.frameIndex + 1) % this.numFrames;
   };
+  return that;
 }
 
 function loop() {
@@ -42,14 +45,15 @@ function loop() {
     character.y = canvas.height - character.height;
     character.yVelocity = 0;
   }
-  character.context.clearRect(0, 0, canvas.width, canvas.height);
+  obstacle.x += obstacle.xVelocity;
   character.render();
+  obstacle.render();
   character.update();
 }
 
 var game = {
   start: function() {
-    this.interval = setInterval(loop, 100);
+    this.interval = setInterval(loop, 75);
     window.addEventListener('keydown', function (e) {
       game.key = e.keyCode;
     });
@@ -66,7 +70,7 @@ canvas.height = CANVAS_HEIGHT;
 var characterImage = new Image();
 characterImage.src = "running-man-animation-sprite-8-frame-loop.png";
 
-var character = new sprite(
+var character = sprite(
   {
     context: canvas.getContext("2d"),
     width: CHARACTER_WIDTH,
@@ -80,4 +84,18 @@ var character = new sprite(
 character.yVelocity = 0;
 character.yMin = CANVAS_HEIGHT - 2 * CHARACTER_HEIGHT;
 
+function obstacle() {
+  this.width = 30;
+  this.height = 30;
+  this.x = CANVAS_WIDTH;
+  this.y = CANVAS_HEIGHT - this.height;
+  this.xVelocity = -10;
+  context = canvas.getContext("2d");
+  context.fillStyle = "blue";
+  this.render = function() {
+    context.fillRect(this.x, this.y, this.width, this.height);
+  };
+}
+
+obstacle = new obstacle();
 game.start();
