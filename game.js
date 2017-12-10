@@ -4,6 +4,16 @@ var KEYS = {SPACEBAR : 32, W: 87, UP_ARROW: 38};
 var CHARACTER_WIDTH = 56;
 var CHARACTER_HEIGHT = 77;
 
+function score() {
+  this.context = canvas.getContext("2d");
+  this.x = 15;
+  this.y = 15;
+  this.context.fillStyle = "black";
+  this.update = function(string) {
+    this.context.fillText(string, this.x, this.y);
+  };
+}
+
 function sprite (options) {
   var that = {};
   that.context = options.context;
@@ -84,11 +94,13 @@ function loop() {
       game.stop();
     }
   }
+  game.score.update("Score: " + game.frame);
 }
 
 var game = {
   start: function() {
     this.frame = 0;
+    this.score = new score();
     this.interval = setInterval(loop, 60);
     window.addEventListener('keydown', function (e) {
       game.key = e.keyCode;
@@ -99,6 +111,10 @@ var game = {
   },
   stop : function() {
     clearInterval(this.interval);
+    var paragraph = document.createElement("P");
+    var text = document.createTextNode("GAME OVER. Press CTRL+R to restart.");
+    paragraph.appendChild(text);
+    document.body.insertBefore(paragraph, document.body.childNodes[0]);
   }
 };
 
