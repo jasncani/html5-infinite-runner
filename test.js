@@ -49,6 +49,9 @@ function loop() {
   character.render();
   obstacle.render();
   character.update();
+  if (obstacle.colidesWith(character)) {
+    game.stop();
+  }
 }
 
 var game = {
@@ -60,6 +63,9 @@ var game = {
     window.addEventListener('keyup', function (e) {
       game.key = false;
     });
+  },
+  stop : function() {
+    clearInterval(this.interval);
   }
 };
 
@@ -89,11 +95,25 @@ function obstacle() {
   this.height = 30;
   this.x = CANVAS_WIDTH;
   this.y = CANVAS_HEIGHT - this.height;
-  this.xVelocity = -10;
-  context = canvas.getContext("2d");
+  this.xVelocity = -12;
+  var context = canvas.getContext("2d");
   context.fillStyle = "blue";
   this.render = function() {
     context.fillRect(this.x, this.y, this.width, this.height);
+  };
+  this.colidesWith = function(otherObj) {
+    var myLeft = this.x;
+    var myRight = this.x + (this.width);
+    var myTop = this.y;
+    var myBottom = this.y + (this.height);
+    var otherLeft = otherObj.x;
+    var otherRight = otherObj.x + (otherObj.width);
+    var otherTop = otherObj.y;
+    var otherBottom = otherObj.y + (otherObj.height);
+    if ((myBottom < otherTop) || (myTop > otherBottom) || (myRight < otherLeft) || (myLeft > otherRight)) {
+      return false;
+    }
+    return true;
   };
 }
 
