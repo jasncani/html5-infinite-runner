@@ -75,21 +75,23 @@ function Obstacle() {
 
 function loop() {
   game.frame += 1;
-  if (game.frame % 30 == 0) { obstacles.push(new Obstacle()); }
-  if (game.key && (game.key == KEYS.SPACEBAR || game.key == KEYS.UP_ARROW || game.key == KEYS.W) && character.y == canvas.height - character.height) {
+  if (game.frame % 30 == 0) { obstacles.push(new Obstacle()); } // create a new obstacle every 30 frames
+  if (game.key && (game.key == KEYS.SPACEBAR || game.key == KEYS.UP_ARROW || game.key == KEYS.W) && character.y == canvas.height - character.height) { // if character jumps
     character.yVelocity = -12;
   }
+  // change character position
   character.y += character.yVelocity;
   if (character.y < character.yMin) { character.yVelocity = -1 * character.yVelocity; }
   if (character.y > canvas.height - character.height) {
     character.y = canvas.height - character.height;
     character.yVelocity = 0;
   }
+  // (re)draw the character
   character.render();
   character.update();
   for (var i = 0; i < obstacles.length; i++) {
-    obstacles[i].x += obstacles[i].xVelocity;
-    obstacles[i].draw();
+    obstacles[i].x += obstacles[i].xVelocity; // move obstacle towards the character
+    obstacles[i].draw(); // draw the obstacle
     if (obstacles[i].colidesWith(character)) {
       game.stop();
     }
